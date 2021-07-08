@@ -21,34 +21,25 @@
 
 <script>
 
+import { ipcRenderer } from 'electron'
 import Pill from './Pill'
 
 export default {
     components: { Pill },
     data(){
         return {
-            groupedWords: [
-                {name:'i', amount: 1253},
-                {name:'you', amount: 900},
-                {name:'he', amount: 853},
-                {name:'i', amount: 1253},
-                {name:'you', amount: 900},
-                {name:'he', amount: 853},
-                {name:'i', amount: 1253},
-                {name:'you', amount: 900},
-                {name:'he', amount: 853},
-                {name:'i', amount: 1253},
-                {name:'you', amount: 900},
-                {name:'he', amount: 853},
-                {name:'i', amount: 1253},
-                {name:'you', amount: 900},
-                {name:'he', amount: 853},
-            ]
+            files: [],
+            groupedWords: []
         }
     },
     methods: {
         processSubtitles(){
-            console.log(this.files)
+            const paths = this.files.map(f => f.path)
+            console.log(paths)
+            ipcRenderer.send('process-subtitles', paths)
+            ipcRenderer.on('process-subtitles', (event, resp) => {
+                this.groupedWords = resp
+            })
         }
     }
 }
